@@ -15,7 +15,7 @@ namespace DevIO.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.14")
+                .HasAnnotation("ProductVersion", "3.1.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -52,6 +52,9 @@ namespace DevIO.Data.Migrations
                     b.Property<int>("TipoPessoa")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("_Insert")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("Cliente");
@@ -74,6 +77,9 @@ namespace DevIO.Data.Migrations
 
                     b.Property<Guid>("UsuarioId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("_Insert")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -99,6 +105,9 @@ namespace DevIO.Data.Migrations
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
 
+                    b.Property<DateTime>("_Insert")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
                     b.ToTable("MateriaPrimaEstoque");
@@ -116,9 +125,6 @@ namespace DevIO.Data.Migrations
                     b.Property<DateTime?>("DataEntrega")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DataSolicitacao")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Descricao")
                         .HasColumnType("varchar(100)");
 
@@ -128,6 +134,9 @@ namespace DevIO.Data.Migrations
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("_Insert")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -150,6 +159,9 @@ namespace DevIO.Data.Migrations
 
                     b.Property<int>("Quantidade")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("_Insert")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 

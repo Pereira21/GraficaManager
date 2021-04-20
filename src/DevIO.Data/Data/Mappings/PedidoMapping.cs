@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DevIO.Data.Data.Mapping
+namespace DevIO.Data.Data.Mappings
 {
     public class PedidoMapping : IEntityTypeConfiguration<Pedido>
     {
@@ -14,9 +14,6 @@ namespace DevIO.Data.Data.Mapping
                 .IsRequired();
 
             builder.Property(p => p.NumeroPedido)
-                .IsRequired();
-
-            builder.Property(p => p.DataSolicitacao)
                 .IsRequired();
 
             builder.Property(p => p.DataEntrega);

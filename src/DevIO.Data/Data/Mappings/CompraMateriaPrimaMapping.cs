@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DevIO.Data.Data.Mapping
+namespace DevIO.Data.Data.Mappings
 {
     public class CompraMateriaPrimaMapping : IEntityTypeConfiguration<CompraMateriaPrima>
     {

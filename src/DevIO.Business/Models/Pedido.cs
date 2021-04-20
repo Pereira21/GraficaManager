@@ -8,7 +8,6 @@ namespace DevIO.Business.Models
     {
         public Guid ClienteId { get; set; }
         public string NumeroPedido { get; set; }
-        public DateTime DataSolicitacao { get; set; }
         public DateTime? DataEntrega { get; set; }
         public string Descricao { get; set; }
         public EStatusPedido Status { get; set; }
