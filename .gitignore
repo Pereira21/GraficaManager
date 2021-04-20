@@ -1,0 +1,14 @@
+*.dll
+*.so
+src/DevIO.App/bin/
+src/DevIO.App/obj/
+src/DevIO.Business/obj/
+src/DevIO.Data/obj/Debug/
+src/DevIO.Data/obj/
+src/DevIO.Data/bin/
+src/DevIO.Business/bin/
+src/DevIO.App/wwwroot/lib/
+solution/.vs/
+.vs/MinhaAppDesafio/v16/
+.vs/MinhaAppDesafio/DesignTimeBuild/
+.vs/GraficaWebManager/v16/
