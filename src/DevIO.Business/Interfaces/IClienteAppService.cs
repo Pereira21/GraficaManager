@@ -9,5 +9,7 @@ namespace DevIO.Business.Interfaces
     {
         Task<IEnumerable<Cliente>> GetAllAsync();
         Task<Cliente> GetByIdAsync(Guid id);
+
+        Task Add(Cliente cliente);
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using DevIO.App.Models;
 using DevIO.Business.Interfaces;
 using DevIO.App.Controllers.Base;
+using DevIO.App.Models.ClienteViewModel;
+using AutoMapper;
+using DevIO.Business.Models;
 
 namespace DevIO.App.Controllers
 {
@@ -11,7 +13,7 @@ namespace DevIO.App.Controllers
     {
         private readonly IClienteAppService _clienteAppService;
 
-        public ClientesController(IClienteAppService clienteAppService)
+        public ClientesController(IMapper mapper, IClienteAppService clienteAppService) : base (mapper)
         {
             _clienteAppService = clienteAppService;
         }
@@ -21,6 +23,24 @@ namespace DevIO.App.Controllers
         {
             var clientes = await _clienteAppService.GetAllAsync();
             return View(clientes);
+        }
+
+        public async Task<IActionResult> Create()
+        {
+            return View(new CreateClienteViewModel());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CreateClienteViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            await _clienteAppService.Add(_mapper.Map<Cliente>(model));
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Clientes/Details/5
@@ -39,31 +59,6 @@ namespace DevIO.App.Controllers
             //}
 
             //return View(cliente);
-            return View();
-        }
-
-        // GET: Clientes/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Clientes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(ClienteViewModel cliente)
-        {
-            //if (ModelState.IsValid)
-            //{
-            //    cliente.Id = Guid.NewGuid();
-            //    _context.Add(cliente);
-            //    await _context.SaveChangesAsync();
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(cliente);
-
             return View();
         }
 
@@ -90,7 +85,7 @@ namespace DevIO.App.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, ClienteViewModel cliente)
+        public async Task<IActionResult> Edit(Guid id, EditClienteViewModel cliente)
         {
             //if (id != cliente.Id)
             //{

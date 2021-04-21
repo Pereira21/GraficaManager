@@ -38,6 +38,8 @@ namespace DevIO.App
 
             services.AddRazorPages();
 
+            services.AddAutoMapper(typeof(Startup));
+
             services.ResolveDependencies();
         }
 

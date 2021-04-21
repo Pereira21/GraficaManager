@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DevIO.App.Controllers.Base
 {
     public class BaseController : Controller
     {
-        public IActionResult Index()
+        protected readonly IMapper _mapper;
+
+        public BaseController(IMapper mapper)
         {
-            return View();
+            _mapper = mapper;
         }
     }
 }

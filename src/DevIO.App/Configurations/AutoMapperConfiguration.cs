@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using DevIO.App.Models;
+using DevIO.App.Models.ClienteViewModel;
 using DevIO.Business.Models;
 
 namespace DevIO.App.Configurations
@@ -8,7 +8,8 @@ namespace DevIO.App.Configurations
     {
         public AutoMapperConfiguration()
         {
-            CreateMap<ClienteViewModel, Cliente>().ReverseMap();
+            CreateMap<CreateClienteViewModel, Cliente>();
+            CreateMap<EditClienteViewModel, Cliente>().ReverseMap();
         }
     }
 }

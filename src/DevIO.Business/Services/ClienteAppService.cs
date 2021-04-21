@@ -7,23 +7,33 @@ using System.Threading.Tasks;
 
 namespace DevIO.Business.Services
 {
-    public class ClienteAppService : IClienteAppService
+    public class ClienteAppService : BaseAppService, IClienteAppService
     {
         private readonly IClienteRepository _clienteRepository;
-        public ClienteAppService(IClienteRepository clienteRepository)
+        public ClienteAppService(INotificator notificator, IClienteRepository clienteRepository) : base(notificator)
         {
             _clienteRepository = clienteRepository;
         }
 
+        #region Queries
         public async Task<IEnumerable<Cliente>> GetAllAsync()
         {
             var clientes = await _clienteRepository.GetAll();
             return clientes.ToArray();
         }
 
-        public Task<Cliente> GetByIdAsync(Guid id)
+        public async Task<Cliente> GetByIdAsync(Guid id)
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Commands
+        public async Task Add(Cliente cliente)
+        {
+            await _clienteRepository.Add(cliente);
+        }
+        #endregion
     }
 }
