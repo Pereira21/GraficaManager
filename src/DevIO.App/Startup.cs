@@ -36,7 +36,7 @@ namespace DevIO.App
 
             services.AddControllersWithViews();
 
-            services.AddRazorPages();
+            services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddAutoMapper(typeof(Startup));
 

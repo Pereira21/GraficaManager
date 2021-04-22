@@ -13,7 +13,7 @@ namespace DevIO.App.Controllers
     {
         private readonly IClienteAppService _clienteAppService;
 
-        public ClientesController(IMapper mapper, IClienteAppService clienteAppService) : base (mapper)
+        public ClientesController(IMapper mapper, INotificator notificator, IClienteAppService clienteAppService) : base (mapper, notificator)
         {
             _clienteAppService = clienteAppService;
         }
@@ -35,11 +35,14 @@ namespace DevIO.App.Controllers
         public async Task<IActionResult> Create(CreateClienteViewModel model)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
             await _clienteAppService.Add(_mapper.Map<Cliente>(model));
+
+            if (!OperacaoValida())
+                return View(model);
+
+            TempData["Sucesso"] = "Cliente cadastrado com sucesso!";
             return RedirectToAction(nameof(Index));
         }
 

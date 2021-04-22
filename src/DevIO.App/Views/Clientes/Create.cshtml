@@ -8,7 +8,7 @@
 <hr />
 
 <form asp-action="Create">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <vc:summary></vc:summary>
     <div class="row">
         <div class="form-group col-md-4">
             <label asp-for="TipoPessoa" class="control-label"></label>
@@ -26,43 +26,73 @@
             <span asp-validation-for="NomeCompleto" class="text-danger"></span>
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-group col-md-4">
-            <label asp-for="DataNascimento" class="control-label"></label>
-            <input asp-for="DataNascimento" class="form-control" />
-            <span asp-validation-for="DataNascimento" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-4">
-            <label asp-for="RazaoSocial" class="control-label"></label>
-            <input asp-for="RazaoSocial" class="form-control" />
-            <span asp-validation-for="RazaoSocial" class="text-danger"></span>
-        </div>
-        <div class="form-group col-md-4">
-            <label asp-for="NomeFantasia" class="control-label"></label>
-            <input asp-for="NomeFantasia" class="form-control" />
-            <span asp-validation-for="NomeFantasia" class="text-danger"></span>
+    <div id="div-pessoa-fisica">
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label asp-for="DataNascimento" class="control-label"></label>
+                <input asp-for="DataNascimento" class="form-control" />
+                <span asp-validation-for="DataNascimento" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="TelefoneContato" class="control-label"></label>
+                <input asp-for="TelefoneContato" class="form-control" />
+                <span asp-validation-for="TelefoneContato" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="EmailContato" class="control-label"></label>
+                <input asp-for="EmailContato" class="form-control" />
+                <span asp-validation-for="EmailContato" class="text-danger"></span>
+            </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="form-group col-md-4">
-            <label asp-for="TelefoneContato" class="control-label"></label>
-            <input asp-for="TelefoneContato" class="form-control" />
-            <span asp-validation-for="TelefoneContato" class="text-danger"></span>
+    <div id="div-pessoa-juridica" hidden>
+        <div class="row">
+            <div class="form-group col-md-4 ">
+                <label asp-for="RazaoSocial" class="control-label"></label>
+                <input asp-for="RazaoSocial" class="form-control" />
+                <span asp-validation-for="RazaoSocial" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="NomeFantasia" class="control-label"></label>
+                <input asp-for="NomeFantasia" class="form-control" />
+                <span asp-validation-for="NomeFantasia" class="text-danger"></span>
+            </div>
+            <div class="form-group col-md-4">
+                <label asp-for="TelefoneContato" class="control-label"></label>
+                <input asp-for="TelefoneContato" class="form-control" />
+                <span asp-validation-for="TelefoneContato" class="text-danger"></span>
+            </div>
         </div>
-        <div class="form-group col-md-4">
-            <label asp-for="EmailContato" class="control-label"></label>
-            <input asp-for="EmailContato" class="form-control" />
-            <span asp-validation-for="EmailContato" class="text-danger"></span>
+        <div class="row">
+            <div class="form-group col-md-4">
+                <label asp-for="EmailContato" class="control-label"></label>
+                <input asp-for="EmailContato" class="form-control" />
+                <span asp-validation-for="EmailContato" class="text-danger"></span>
+            </div>
         </div>
-        <div class="form-group col-md-4"></div>
     </div>
-
     <div class="form-group fa-pull-right">
         <a class="btn btn-warning" asp-action="Index">Voltar</a>
         <input type="submit" value="Cadastrar" class="btn btn-primary" />
     </div>
-
 </form>
 
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $('#div-pessoa-juridica').hide();
+
+            $('#TipoPessoa').change(function () {
+                if ($(this).val() == 'PessoaJuridica') {
+                    $('#div-pessoa-juridica').removeAttr('style');
+                    $('#div-pessoa-juridica').removeAttr('hidden');
+                    $('#div-pessoa-fisica').hide();
+                } else {
+                    $('#div-pessoa-juridica').hide();
+                    $('#div-pessoa-fisica').show();
+                }
+            });
+        });
+    </script>
+}

@@ -8,6 +8,11 @@ namespace DevIO.Business.Notifications
     {
         private List<Notification> _notifications;
 
+        public Notificator()
+        {
+            _notifications = new List<Notification>();
+        }
+
         public List<Notification> GetNotifications()
         {
             return _notifications;

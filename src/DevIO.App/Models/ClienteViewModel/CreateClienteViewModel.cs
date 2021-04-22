@@ -21,7 +21,7 @@ namespace DevIO.App.Models.ClienteViewModel
         [Required(ErrorMessage = "Obrigatório!")]
         public string CpfCnpj { get; set; }
 
-        [Display(Name = "Nome Completo")]
+        [Display(Name = "Nome Contato")]
         public string NomeCompleto { get; set; }
 
         [Display(Name = "Data Nascimento")]
