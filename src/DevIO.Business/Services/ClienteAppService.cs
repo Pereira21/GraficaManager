@@ -1,5 +1,6 @@
 ﻿using DevIO.Business.Interfaces;
 using DevIO.Business.Models;
+using DevIO.Business.Models.Validations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,8 @@ namespace DevIO.Business.Services
 
         public async Task<Cliente> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var cliente = await _clienteRepository.GetById(id);
+            return cliente;
         }
 
         #endregion
@@ -32,7 +34,21 @@ namespace DevIO.Business.Services
         #region Commands
         public async Task Add(Cliente cliente)
         {
+            if (!ExecuteValidation(new ClienteValidation(), cliente)) return;
+
             await _clienteRepository.Add(cliente);
+        }
+
+        public async Task Update(Cliente cliente)
+        {
+            if (!ExecuteValidation(new ClienteValidation(), cliente)) return;
+
+            await _clienteRepository.Update(cliente);
+        }
+
+        public async Task Delete(Guid id)
+        {
+            await _clienteRepository.Delete(id);
         }
         #endregion
     }

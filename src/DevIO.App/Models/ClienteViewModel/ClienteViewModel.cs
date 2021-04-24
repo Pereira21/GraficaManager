@@ -1,19 +1,12 @@
 ﻿using DevIO.Business.Enums;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 
 namespace DevIO.App.Models.ClienteViewModel
 {
-    public class EditClienteViewModel
+    public class ClienteViewModel
     {
-        public EditClienteViewModel()
-        {
-            TiposPessoa = Enum.GetValues(typeof(ETipoPessoa)).Cast<ETipoPessoa>();
-        }
         public Guid Id { get; set; }
-
         [Display(Name = "Tipo Pessoa")]
         [Required(ErrorMessage = "Obrigatório!")]
         public ETipoPessoa TipoPessoa { get; set; }
@@ -42,7 +35,5 @@ namespace DevIO.App.Models.ClienteViewModel
         [Required(ErrorMessage = "Obrigatório!")]
         [EmailAddress(ErrorMessage = "O E-mail é inválido!")]
         public string EmailContato { get; set; }
-
-        public IEnumerable<ETipoPessoa> TiposPessoa { get; set; }
     }
 }

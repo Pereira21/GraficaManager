@@ -1,35 +1,41 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using DevIO.Business.Interfaces;
+﻿using AutoMapper;
 using DevIO.App.Controllers.Base;
 using DevIO.App.Models.ClienteViewModel;
-using AutoMapper;
+using DevIO.Business.Interfaces;
 using DevIO.Business.Models;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Threading.Tasks;
+using static DevIO.App.Extensions.CustomAuthorization;
 
 namespace DevIO.App.Controllers
 {
+    [Route("Cliente")]
     public class ClientesController : BaseController
     {
         private readonly IClienteAppService _clienteAppService;
 
-        public ClientesController(IMapper mapper, INotificator notificator, IClienteAppService clienteAppService) : base (mapper, notificator)
+        public ClientesController(IMapper mapper, INotificator notificator, IClienteAppService clienteAppService) : base(mapper, notificator)
         {
             _clienteAppService = clienteAppService;
         }
 
-        [Route("Listar")]
+        [Route("Lista")]
         public async Task<IActionResult> Index()
         {
             var clientes = await _clienteAppService.GetAllAsync();
             return View(clientes);
         }
 
+        [ClaimsAuthorize("Cliente", "Adicionar")]
+        [Route("Cadastro")]
         public async Task<IActionResult> Create()
         {
             return View(new CreateClienteViewModel());
         }
 
+        [ClaimsAuthorize("Cliente", "Adicionar")]
+        [Route("Cadastro")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateClienteViewModel model)
@@ -46,117 +52,84 @@ namespace DevIO.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Clientes/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        [Route("Detalhe/{id:guid}")]
+        public async Task<IActionResult> Details(Guid id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            var cliente = await _clienteAppService.GetByIdAsync(id);
+            var model = _mapper.Map<ClienteViewModel>(cliente);
 
-            //var cliente = await _context.Clientes
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (cliente == null)
-            //{
-            //    return NotFound();
-            //}
+            if (cliente == null)
+                return NotFound();
 
-            //return View(cliente);
-            return View();
+            return View(model);
         }
 
-        // GET: Clientes/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        [ClaimsAuthorize("Cliente", "Editar")]
+        [Route("Edicao/{id:guid}")]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            var cliente = await _clienteAppService.GetByIdAsync(id);
+            var model = _mapper.Map<EditClienteViewModel>(cliente);
 
-            //var cliente = await _context.Clientes.FindAsync(id);
-            //if (cliente == null)
-            //{
-            //    return NotFound();
-            //}
-            //return View(cliente);
+            if (model == null)
+                return NotFound();
 
-            return View();
+            return View(model);
         }
 
-        // POST: Clientes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [ClaimsAuthorize("Cliente", "Editar")]
+        [Route("Edicao/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, EditClienteViewModel cliente)
         {
-            //if (id != cliente.Id)
-            //{
-            //    return NotFound();
-            //}
+            if (id != cliente.Id)
+                return NotFound();
 
-            //if (ModelState.IsValid)
-            //{
-            //    try
-            //    {
-            //        _context.Update(cliente);
-            //        await _context.SaveChangesAsync();
-            //    }
-            //    catch (DbUpdateConcurrencyException)
-            //    {
-            //        if (!ClienteExists(cliente.Id))
-            //        {
-            //            return NotFound();
-            //        }
-            //        else
-            //        {
-            //            throw;
-            //        }
-            //    }
-            //    return RedirectToAction(nameof(Index));
-            //}
-            //return View(cliente);
-            return View();
+            if (!ModelState.IsValid)
+                return View(cliente);
+
+            await _clienteAppService.Update(_mapper.Map<Cliente>(cliente));
+
+            if(!OperacaoValida())
+                return View(cliente);
+
+            TempData["Sucesso"] = "Cliente atualizado com sucesso!";
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Clientes/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        [ClaimsAuthorize("Cliente", "Deletar")]
+        [Route("Exclusao/{id:guid}")]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            var cliente = await _clienteAppService.GetByIdAsync(id);
+            var model = _mapper.Map<ClienteViewModel>(cliente);
 
-            //var cliente = await _context.Clientes
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (cliente == null)
-            //{
-            //    return NotFound();
-            //}
+            if (model == null)
+                return NotFound();
 
-            //return View(cliente);
-
-            return View();
+            return View(model);
         }
 
-        // POST: Clientes/Delete/5
+        [ClaimsAuthorize("Cliente", "Deletar")]
+        [Route("Exclusao/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            //var cliente = await _context.Clientes.FindAsync(id);
-            //_context.Clientes.Remove(cliente);
-            //await _context.SaveChangesAsync();
-            //return RedirectToAction(nameof(Index));
+            var cliente = await _clienteAppService.GetByIdAsync(id);
+            var model = _mapper.Map<ClienteViewModel>(cliente);
 
-            return View();
-        }
+            if (model == null)
+                return NotFound();
 
-        private bool ClienteExists(Guid id)
-        {
-            //return _context.Clientes.Any(e => e.Id == id);
+            await _clienteAppService.Delete(id);
 
-            return true;
+            if (!OperacaoValida())
+                return View(model);
+
+            TempData["Sucesso"] = "Cliente excluído com sucesso!";
+            return RedirectToAction(nameof(Index));
         }
     }
 }

@@ -11,5 +11,7 @@ namespace DevIO.Business.Interfaces
         Task<Cliente> GetByIdAsync(Guid id);
 
         Task Add(Cliente cliente);
+        Task Update(Cliente cliente);
+        Task Delete(Guid id);
     }
 }

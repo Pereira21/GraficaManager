@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using DevIO.Business.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DevIO.App.Controllers.Base
 {
+    [Authorize]
     public class BaseController : Controller
     {
         protected readonly IMapper _mapper;

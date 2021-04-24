@@ -31,7 +31,7 @@ namespace DevIO.Data.Data.Repositories
 
         public async Task<TEntity> GetById(Guid id)
         {
-            return await DbSet.FindAsync(id);
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task Add(TEntity entity)

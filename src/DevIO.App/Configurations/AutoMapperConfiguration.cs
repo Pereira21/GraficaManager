@@ -10,6 +10,7 @@ namespace DevIO.App.Configurations
         {
             CreateMap<CreateClienteViewModel, Cliente>();
             CreateMap<EditClienteViewModel, Cliente>().ReverseMap();
+            CreateMap<Cliente, ClienteViewModel>();
         }
     }
 }
