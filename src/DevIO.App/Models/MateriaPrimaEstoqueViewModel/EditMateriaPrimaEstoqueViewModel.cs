@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace DevIO.Business.Models
+namespace DevIO.App.Models.MateriaPrimaEstoqueViewModel
 {
-    public class MateriaPrimaEstoque : BaseEntity
+    public class EditMateriaPrimaEstoqueViewModel
     {
+        public Guid Id { get; set; }
+
         [Display(Name = "Nome")]
+        [Required(ErrorMessage = "Obrigatório!")]
         public string Nome { get; set; }
 
         [Display(Name = "Descrição")]
+        [Required(ErrorMessage = "Obrigatório!")]
         public string Descricao { get; set; }
 
         [Display(Name = "Quantidade")]
+        [Required(ErrorMessage = "Obrigatório!")]
         public int Quantidade { get; set; }
 
-        [Display(Name = "Imagem")]
         public string Imagem { get; set; }
-
-        public IEnumerable<CompraMateriaPrima> Compras { get; set; }
-        public IEnumerable<PedidoMateriaPrimaEstoque> Pedidos { get; set; }
     }
 }

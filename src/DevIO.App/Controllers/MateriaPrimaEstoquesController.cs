@@ -1,155 +1,137 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
+using DevIO.App.Models.MateriaPrimaEstoqueViewModel;
+using DevIO.Business.Interfaces;
+using AutoMapper;
 using DevIO.Business.Models;
-using DevIO.Data.Data;
-using DevIO.App.Models;
+using DevIO.App.Controllers.Base;
+using System.Collections.Generic;
+using static DevIO.App.Extensions.CustomAuthorization;
 
 namespace DevIO.App.Controllers
 {
-    public class MateriaPrimaEstoquesController : Controller
+    [Route("MateriaPrimaEstoque")]
+    public class MateriaPrimaEstoquesController : BaseController
     {
-        private readonly GraficaDbContext _context;
+        private readonly IMateriaPrimaEstoqueAppService _materiaPrimaEstoqueAppService;
 
-        public MateriaPrimaEstoquesController(GraficaDbContext context)
+        public MateriaPrimaEstoquesController(IMapper mapper, INotificator notificator, IMateriaPrimaEstoqueAppService materiaPrimaEstoqueAppService) : base(mapper, notificator)
         {
-            _context = context;
+            _materiaPrimaEstoqueAppService = materiaPrimaEstoqueAppService;
         }
 
-        // GET: MateriaPrimaEstoques
+        [Route("Lista")]
         public async Task<IActionResult> Index()
         {
-            return View(await _context.MateriasPrimasEstoque.ToListAsync());
+            var materiaPrimaEstoques = await _materiaPrimaEstoqueAppService.GetAllAsync();
+            var model = _mapper.Map<List<MateriaPrimaEstoqueViewModel>>(materiaPrimaEstoques);
+            return View(model);
         }
 
-        // GET: MateriaPrimaEstoques/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        [Route("Detalhe/{id:guid}")]
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var materiaPrimaEstoque = await _materiaPrimaEstoqueAppService.GetByIdAsync(id);
+            var model = _mapper.Map<MateriaPrimaEstoqueViewModel>(materiaPrimaEstoque);
 
-            var materiaPrimaEstoque = await _context.MateriasPrimasEstoque
-                .FirstOrDefaultAsync(m => m.Id == id);
             if (materiaPrimaEstoque == null)
-            {
                 return NotFound();
-            }
 
-            return View(materiaPrimaEstoque);
+            return View(model);
         }
 
-        // GET: MateriaPrimaEstoques/Create
+        [Route("Cadastro")]
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: MateriaPrimaEstoques/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [ClaimsAuthorize("MateriaPrimaEstoque", "Adicionar")]
+        [Route("Cadastro")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(MateriaPrimaEstoquesViewModel materiaPrimaEstoque)
+        public async Task<IActionResult> Create(CreateMateriaPrimaEstoqueViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                materiaPrimaEstoque.Id = Guid.NewGuid();
-                _context.Add(materiaPrimaEstoque);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(materiaPrimaEstoque);
+            if (!ModelState.IsValid)
+                return View(model);
+
+            await _materiaPrimaEstoqueAppService.Add(_mapper.Map<MateriaPrimaEstoque>(model));
+
+            if (!OperacaoValida())
+                return View(model);
+
+            TempData["Sucesso"] = "Matéria Prima cadastrada com sucesso!";
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: MateriaPrimaEstoques/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        [ClaimsAuthorize("MateriaPrimaEstoque", "Editar")]
+        [Route("Edicao/{id:guid}")]
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var cliente = await _materiaPrimaEstoqueAppService.GetByIdAsync(id);
+            var model = _mapper.Map<EditMateriaPrimaEstoqueViewModel>(cliente);
 
-            var materiaPrimaEstoque = await _context.MateriasPrimasEstoque.FindAsync(id);
-            if (materiaPrimaEstoque == null)
-            {
+            if (model == null)
                 return NotFound();
-            }
-            return View(materiaPrimaEstoque);
+
+            return View(model);
         }
 
-        // POST: MateriaPrimaEstoques/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [ClaimsAuthorize("MateriaPrimaEstoque", "Editar")]
+        [Route("Edicao/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, MateriaPrimaEstoquesViewModel materiaPrimaEstoque)
+        public async Task<IActionResult> Edit(Guid id, EditMateriaPrimaEstoqueViewModel materiaPrimaEstoque)
         {
             if (id != materiaPrimaEstoque.Id)
-            {
                 return NotFound();
-            }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(materiaPrimaEstoque);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!MateriaPrimaEstoqueExists(materiaPrimaEstoque.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(materiaPrimaEstoque);
+            if (!ModelState.IsValid)
+                return View(materiaPrimaEstoque);
+
+            await _materiaPrimaEstoqueAppService.Update(_mapper.Map<MateriaPrimaEstoque>(materiaPrimaEstoque));
+
+            if (!OperacaoValida())
+                return View(materiaPrimaEstoque);
+
+            TempData["Sucesso"] = "Matéria Prima atualizada com sucesso!";
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: MateriaPrimaEstoques/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        [ClaimsAuthorize("MateriaPrimaEstoque", "Deletar")]
+        [Route("Exclusao")]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var cliente = await _materiaPrimaEstoqueAppService.GetByIdAsync(id);
+            var model = _mapper.Map<MateriaPrimaEstoqueViewModel>(cliente);
 
-            var materiaPrimaEstoque = await _context.MateriasPrimasEstoque
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (materiaPrimaEstoque == null)
-            {
+            if (model == null)
                 return NotFound();
-            }
 
-            return View(materiaPrimaEstoque);
+            return View(model);
         }
 
-        // POST: MateriaPrimaEstoques/Delete/5
+        [ClaimsAuthorize("MateriaPrimaEstoque", "Deletar")]
+        [Route("Exclusao")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var materiaPrimaEstoque = await _context.MateriasPrimasEstoque.FindAsync(id);
-            _context.MateriasPrimasEstoque.Remove(materiaPrimaEstoque);
-            await _context.SaveChangesAsync();
+            var materiaPrimaEstoque = await _materiaPrimaEstoqueAppService.GetByIdAsync(id);
+            var model = _mapper.Map<MateriaPrimaEstoqueViewModel>(materiaPrimaEstoque);
+
+            if (model == null)
+                return NotFound();
+
+            await _materiaPrimaEstoqueAppService.Delete(id);
+
+            if (!OperacaoValida())
+                return View(model);
+
+            TempData["Sucesso"] = "Matéria Prima excluída com sucesso!";
             return RedirectToAction(nameof(Index));
         }
 
-        private bool MateriaPrimaEstoqueExists(Guid id)
-        {
-            return _context.MateriasPrimasEstoque.Any(e => e.Id == id);
-        }
     }
 }

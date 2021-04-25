@@ -19,6 +19,8 @@ namespace DevIO.Data.Data.Mappings
             builder.Property(p => p.Quantidade)
                 .IsRequired();
 
+            builder.Property(p => p.Imagem);
+
             builder.HasMany(p => p.Compras)
                 .WithOne(p => p.MateriaPrimaEstoque)
                 .HasForeignKey(p => p.MateriaPrimaEstoqueId);

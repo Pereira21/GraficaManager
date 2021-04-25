@@ -2,13 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Routing;
-using System;
 using System.Linq;
 using System.Security.Claims;
 
 namespace DevIO.App.Extensions
 {
-    public class CustomAuthorization
+    public static class CustomAuthorization
     {
         public static bool ValidarClaimsUsuario(HttpContext context, string claimName, string claimValue)
         {

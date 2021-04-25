@@ -5,6 +5,7 @@ using DevIO.Business.Interfaces;
 using DevIO.Business.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using static DevIO.App.Extensions.CustomAuthorization;
 
@@ -24,7 +25,8 @@ namespace DevIO.App.Controllers
         public async Task<IActionResult> Index()
         {
             var clientes = await _clienteAppService.GetAllAsync();
-            return View(clientes);
+            var model = _mapper.Map<List<ClienteViewModel>>(clientes);
+            return View(model);
         }
 
         [ClaimsAuthorize("Cliente", "Adicionar")]

@@ -1,47 +1,46 @@
-﻿@model IEnumerable<DevIO.Business.Models.MateriaPrimaEstoque>
+﻿@model IEnumerable<DevIO.App.Models.MateriaPrimaEstoqueViewModel.MateriaPrimaEstoqueViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Listagem de Matérias Primas";
 }
 
-<h1>Index</h1>
-
+<h4>@ViewData["Title"]</h4>
+<hr />
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-primary" asp-action="Create">Adicionar</a>
 </p>
-<table class="table">
+<vc:summary></vc:summary>
+<table class="table table-hover table-striped">
     <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Nome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Descricao)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantidade)
-            </th>
+        <tr class="thead-dark">
+            <th></th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Quantidade</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Descricao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantidade)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Descricao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantidade)
+                </td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id"><i class="fa fa-edit"></i></a>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id"><i class="fa fa-search"></i></a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="fa fa-trash"></i></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -16,6 +16,7 @@ namespace DevIO.App.Configurations
             #region Repositories
 
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IMateriaPrimaEstoqueRepository, MateriaPrimaEstoqueRepository>();
 
             #endregion
 
