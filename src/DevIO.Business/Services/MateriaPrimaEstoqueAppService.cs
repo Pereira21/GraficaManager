@@ -31,18 +31,18 @@ namespace DevIO.Business.Services
         #endregion
 
         #region Commands
-        public async Task Add(MateriaPrimaEstoque cliente)
+        public async Task Add(MateriaPrimaEstoque materiaPrimaEstoque)
         {
-            if (!ExecuteValidation(new MateriaPrimaEstoqueValidation(), cliente)) return;
+            if (!ExecuteValidation(new MateriaPrimaEstoqueValidation(), materiaPrimaEstoque)) return;
 
-            await _materiaPrimaEstoqueRepository.Add(cliente);
+            await _materiaPrimaEstoqueRepository.Add(materiaPrimaEstoque);
         }
 
-        public async Task Update(MateriaPrimaEstoque cliente)
+        public async Task Update(MateriaPrimaEstoque materiaPrimaEstoque)
         {
-            if (!ExecuteValidation(new MateriaPrimaEstoqueValidation(), cliente)) return;
+            if (!ExecuteValidation(new MateriaPrimaEstoqueValidation(), materiaPrimaEstoque)) return;
 
-            await _materiaPrimaEstoqueRepository.Update(cliente);
+            await _materiaPrimaEstoqueRepository.Update(materiaPrimaEstoque);
         }
 
         public async Task Delete(Guid id)

@@ -8,6 +8,8 @@ using DevIO.Business.Models;
 using DevIO.App.Controllers.Base;
 using System.Collections.Generic;
 using static DevIO.App.Extensions.CustomAuthorization;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace DevIO.App.Controllers
 {
@@ -56,6 +58,13 @@ namespace DevIO.App.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var imgPrefixo = Guid.NewGuid() + "_";
+
+            if (!await UploadArquivo(model.ImagemUpload, imgPrefixo))
+                return View(model);
+
+            model.Imagem = imgPrefixo + model.ImagemUpload.FileName;
+
             await _materiaPrimaEstoqueAppService.Add(_mapper.Map<MateriaPrimaEstoque>(model));
 
             if (!OperacaoValida())
@@ -82,18 +91,28 @@ namespace DevIO.App.Controllers
         [Route("Edicao/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, EditMateriaPrimaEstoqueViewModel materiaPrimaEstoque)
+        public async Task<IActionResult> Edit(Guid id, EditMateriaPrimaEstoqueViewModel model)
         {
-            if (id != materiaPrimaEstoque.Id)
+            if (id != model.Id)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(materiaPrimaEstoque);
+                return View(model);
 
-            await _materiaPrimaEstoqueAppService.Update(_mapper.Map<MateriaPrimaEstoque>(materiaPrimaEstoque));
+            if (model.ImagemUpload != null)
+            {
+                var imgPrefixo = Guid.NewGuid() + "_";
+
+                if (!await UploadArquivo(model.ImagemUpload, imgPrefixo))
+                    return View(model);
+
+                model.Imagem = imgPrefixo + model.ImagemUpload.FileName;
+            }
+
+            await _materiaPrimaEstoqueAppService.Update(_mapper.Map<MateriaPrimaEstoque>(model));
 
             if (!OperacaoValida())
-                return View(materiaPrimaEstoque);
+                return View(model);
 
             TempData["Sucesso"] = "Matéria Prima atualizada com sucesso!";
             return RedirectToAction(nameof(Index));
@@ -133,5 +152,29 @@ namespace DevIO.App.Controllers
             return RedirectToAction(nameof(Index));
         }
 
+
+        #region private methods
+
+        private async Task<bool> UploadArquivo(IFormFile arquivo, string imgPrefixo)
+        {
+            if (arquivo.Length <= 0) return false;
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/materia-prima", imgPrefixo + arquivo.FileName);
+
+            if (System.IO.File.Exists(path))
+            {
+                ModelState.AddModelError(string.Empty, "Já existe um arquivo com este nome!");
+                return false;
+            }
+
+            using (var stream = new FileStream(path, FileMode.Create))
+            {
+                await arquivo.CopyToAsync(stream);
+            }
+
+            return true;
+        }
+
+        #endregion
     }
 }

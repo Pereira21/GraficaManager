@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace DevIO.App.Models.MateriaPrimaEstoqueViewModel
 {
@@ -16,5 +17,8 @@ namespace DevIO.App.Models.MateriaPrimaEstoqueViewModel
         [Required(ErrorMessage = "Obrigatório!")]
         public int Quantidade { get; set; }
         public string Imagem { get; set; }
+
+        [Display(Name = "Imagem")]
+        public IFormFile ImagemUpload { get; set; }
     }
 }
